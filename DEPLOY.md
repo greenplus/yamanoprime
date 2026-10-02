@@ -2,6 +2,15 @@
 
 ソースの保存先は [greenplus/yamanoprime](https://github.com/greenplus/yamanoprime) です。以下の順でRailway APIとGitHub Pagesを設定します。
 
+## 公開先と確認状況（2026-10-02）
+
+- サイト：[YamanoPrime](https://greenplus.github.io/yamanoprime/)
+- API：`https://yamanoprime-production.up.railway.app`
+- Railwayの公開ドメインはTarget Port `8080`。アプリはRailwayの `PORT` を使います。手動で固定する場合も `PORT` とTarget Portを一致させます。
+- GitHub PagesのSourceはGitHub Actions、下表のRepository Variablesは設定済みです。
+- 公開処理成功、ヘルスチェック `ok:true, authAvailable:true`、公開一覧取得、Pages originからのCORS、トップページとログイン画面の表示を確認しました。
+- 実アカウントでのログイン・投稿・プレイ、および実Postgresで複数APIプロセスを動かした同時回答は未確認です。
+
 ## 設定する順序
 
 1. Railwayの [factoring-esportsプロジェクト](https://railway.com/project/8e962f51-3773-43c1-8b65-4ef811f017e0) の `production` を開きます。既存サービスは `fortunate-gratitude`（認証API）、`primeqk_4cards`、`Postgres` です。
@@ -45,7 +54,7 @@ Repository Variables：
 
 | 名前 | 値 |
 | --- | --- |
-| `VITE_API_URL` | 新しいYamanoPrime APIのHTTPS origin。末尾 `/api` は付けない |
+| `VITE_API_URL` | `https://yamanoprime-production.up.railway.app`（末尾 `/api` は付けない） |
 | `VITE_AUTH_API_URL` | `https://fortunate-gratitude-production-768e.up.railway.app` |
 
 公開URLだけをフロントに渡します。DB接続文字列をGitHub Variablesやフロントの環境変数に渡してはいけません。
@@ -62,4 +71,4 @@ Repository Variables：
 4. 実際のPostgresと複数APIプロセスで同時回答しても二重計上されない。
 5. Pagesの直接URL・スマートフォン・認証CORSを確認。
 
-ローカルのPGliteとテスト用共通アカウントテーブルでは自動検証済みです。Railway上の実DB、Dockerビルド、実アカウントの認証、公開URLは未検証です。保存データのバックアップはPostgres側で設定します。v1はセッション詳細を自動削除しません。
+ローカルのPGliteとテスト用共通アカウントテーブルでは自動検証済みです。本番で確認できた範囲は冒頭に記載しています。保存データのバックアップはPostgres側で設定します。v1はセッション詳細を自動削除しません。

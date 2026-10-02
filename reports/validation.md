@@ -39,9 +39,17 @@ Windows / Node 24 / PGliteメモリDBでの1回の計測。実PostgreSQL、ネ�
 
 ## 未確認の項目
 
-- GitHubリポジトリ作成、Pages公開、Railwayサービス作成。
 - Dockerイメージの実ビルド（ローカルにDockerなし）。
-- 本番の共有アカウントDB、実アカウントのログイン、認証APIの実CORS。
+- 実アカウントでのログイン・投稿・プレイ。
 - 実PostgreSQLで複数APIプロセスを動かした同時回答。
 
 共通アカウント連携は既存の認証SQLとログインAPI形式を実装し、テストDBに同じテーブル構造を作って確認しました。実ユーザーの認証成功を報告するものではありません。
+
+## 本番公開の確認 — 2026-10-02
+
+- [GitHub Pages公開ワークフロー](https://github.com/greenplus/yamanoprime/actions/runs/36983474467) 成功。
+- サイト：`https://greenplus.github.io/yamanoprime/`。
+- API：`https://yamanoprime-production.up.railway.app`。ヘルスチェック200、`ok:true, authAvailable:true`。アプリDBと共通認証テーブルへの接続を確認。
+- 公開クイズ一覧200・0件。ローカルのサンプル問題は本番へ自動登録しない設計。
+- APIのCORS：Pages originを許可。Authorization付きリクエストのOPTIONS応答204。
+- 公開ブラウザでトップページ・共通アカウントのログイン画面を確認。ブラウザエラー0件。
