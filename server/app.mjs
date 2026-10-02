@@ -24,7 +24,9 @@ export function createApp({db,rules,origins=[],authenticate,authAvailable=true,t
   async function body(req){
     ensure(req.headers['content-type']?.split(';')[0]==='application/json','JSONで送信してください。',415);
     let length=0;const chunks=[];
-    for await(const chunk of req){length+=chunk.length;ensure(length<=2*1024*1024,'送信内容は2MBまでです。',413);chunks.push(chunk);}
+    // Drain oversized uploads without retaining them so the 413 response arrives intact.
+    for await(const chunk of req){length+=chunk.length;if(length<=2*1024*1024)chunks.push(chunk);else chunks.length=0;}
+    ensure(length<=2*1024*1024,'送信内容は2MBまでです。',413);
     let value;try{value=JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw new RequestError('JSONの形式が不正です。');}
     ensure(value&&typeof value==='object'&&!Array.isArray(value),'オブジェクトを送信してください。');return value;
   }
@@ -78,6 +80,7 @@ export function createApp({db,rules,origins=[],authenticate,authAvailable=true,t
       }
       send(200,result);
     }catch(error){
+      if(error.status===413)res.setHeader('Connection','close');
       if(error.status===429)res.setHeader('Retry-After','60');
       if(!error.status)console.error('request-failed',error.name,error.code||'');
       send(error.status||500,{error:error.status?error.message:'処理を完了できませんでした。回答状態を確認して再試行してください。'});

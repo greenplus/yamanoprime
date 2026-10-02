@@ -149,14 +149,19 @@ test('import errors, max count, malformed JSON, rate and origin defenses',async(
   await request(`sessions/${s.id}/attempts`,{secret:s.token,body:{problem_id:unrelated.items[0].id,request_id:randomUUID(),kind:'dead'},status:404});
   await request('sets?limit=5000',{status:400});
   const raw=await fetch(base+'/api/sets',{method:'POST',headers:{Authorization:'Bearer '+author,'Content-Type':'application/json'},body:'{'});assert.equal(raw.status,400);
-  const oversize=await fetch(base+'/api/sets',{method:'POST',headers:{Authorization:'Bearer '+author,'Content-Type':'application/json'},body:JSON.stringify({title:'a'.repeat(2200000)})});assert.equal(oversize.status,413);
+  async function* chunkedOversize(){yield '{"title":"';for(let i=0;i<35;i++)yield 'a'.repeat(65536);yield '"}';}
+  for(const oversizedBody of [JSON.stringify({title:'a'.repeat(2200000)}),chunkedOversize()]){
+    const oversize=await fetch(base+'/api/sets',{method:'POST',headers:{Authorization:'Bearer '+author,'Content-Type':'application/json'},body:oversizedBody,duplex:'half'});
+    assert.equal(oversize.status,413);assert.equal(oversize.headers.get('connection'),'close');assert.match((await oversize.json()).error,/2MB/);
+    await createSet({normal_text:'113',dead_text:''});
+  }
 });
 test('session summary, attempt and stats roll back together on DB failure',async()=>{
   const set=await createSet({normal_text:'113',dead_text:''}),s=await start(set);
   const original=db.transaction;
   db.transaction=fn=>original(tx=>fn({query:(sql,args)=>{if(sql.startsWith('INSERT INTO yamano_prime.problem_stats'))throw new Error('injected DB failure');return tx.query(sql,args);}}));
-  await request(`sessions/${s.id}/attempts`,{secret:s.token,body:{problem_id:s.items[0].id,request_id:randomUUID(),kind:'move',solution:'113'},status:500});
-  db.transaction=original;
+  try{await request(`sessions/${s.id}/attempts`,{secret:s.token,body:{problem_id:s.items[0].id,request_id:randomUUID(),kind:'move',solution:'113'},status:500});}
+  finally{db.transaction=original;}
   const restored=await request('sessions/'+s.id,{secret:s.token});assert.equal(restored.session.score,0);assert.equal(restored.session.attempted_count,0);assert.equal(restored.items[0].attempt,null);assert.equal((await request('sets/'+set.id)).play_count,0);
   assert.equal((await answer(s,0,'move','113')).score,1);
 });

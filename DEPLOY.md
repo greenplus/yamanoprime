@@ -51,7 +51,7 @@ Repository Variables：
 
 `main`へのpushまたは手動実行で `.github/workflows/pages.yml` がテスト・ビルドします。上記2つのRepository Variablesが設定されている場合に設定検証と公開も実行します。相対アセットURLと `#/set/...` 等のハッシュルートにより、リポジトリのサブパスと再読み込みに対応します。
 
-共通認証APIのCORSにフロントのoriginが必要です。同じ `greenplus.github.io` なら既存設定を使えるか確認してください。
+共通認証APIのCORSは、2026-10-02に `https://greenplus.github.io` を許可するOPTIONS応答（204）を確認済みです。このoriginを使う場合、認証APIへのCORS追加設定は不要です。
 
 ## 公開後の確認
 
