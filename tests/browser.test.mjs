@@ -59,6 +59,64 @@ test('lost final response is retried with the same request without another point
   await page.route('**/api/sessions/*/attempts',async route=>{await route.fetch();await route.abort('failed');intercepted();},{times:1});
   await page.locator('#submit').click();await delivered;await page.waitForFunction(()=>!document.body.classList.contains('busy'));
   await page.getByRole('button',{name:'回答を確認・再送'}).click();await page.getByText('正解！',{exact:true}).waitFor();assert.equal(await page.locator('.score strong').innerText(),'1');assert.equal(await page.locator('.score>span').innerText(),'1 / 5 回答');
+  assert.equal(await page.locator('#retry').count(),0);
+  await page.reload();await page.getByText('正解！',{exact:true}).waitFor();assert.equal(await page.locator('.score strong').innerText(),'1');
+});
+
+test('answer feedback waits for the committed POST response and needs no session GET',async()=>{
+  await start('はじめの一手。4枚から見つけよう');await key('1117');
+  const ready=Promise.withResolvers(),release=Promise.withResolvers();
+  const sessionUrl=/\/api\/sessions\/[^/?]+(?:\?.*)?$/;let sessionReads=0;
+  const blockSession=async route=>{sessionReads++;await route.fulfill({status:503,json:{error:'Session GET must not be needed for answer feedback'}});};
+  await page.route(sessionUrl,blockSession);
+  await page.route('**/api/sessions/*/attempts',async route=>{const response=await route.fetch();ready.resolve();await release.promise;await route.fulfill({response});},{times:1});
+  try{
+    await page.locator('#submit').click();await ready.promise;
+    assert.equal(await page.locator('.answer-feedback').count(),0);
+    assert.equal(await page.locator('#submit').isDisabled(),true);
+    release.resolve();await page.getByText('正解！',{exact:true}).waitFor();
+    await page.waitForFunction(()=>!document.body.classList.contains('busy'));
+    assert.equal(sessionReads,0);
+    assert.equal(await page.locator('.score strong').innerText(),'1');assert.equal(await page.locator('.score>span').innerText(),'1 / 5 回答');
+    assert.equal(await page.locator('.progress span').evaluate(el=>el.style.width),'20%');
+    await page.getByRole('button',{name:'一覧から選ぶ'}).click();
+    assert.equal(await page.locator('[data-problem="0"] small').innerText(),'✓');
+    const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('yp:session:'+JSON.parse(localStorage.getItem('yp:last-session')))));
+    assert.equal(saved.questionQueue.includes(0),false);assert.equal(Object.values(saved.drafts).some(d=>d.pending),false);
+  }finally{release.resolve();await page.unroute(sessionUrl,blockSession);}
+  await page.reload();await page.getByText('正解！',{exact:true}).waitFor();assert.equal(await page.locator('.score strong').innerText(),'1');
+});
+
+test('POST feedback preserves normal wrong answers, dead penalties and correct dead choices',async()=>{
+  await start('上がれる？ それとも詰み？');
+  async function submitDead(){await page.locator('#dead').click();await page.getByRole('button',{name:'確定する'}).click();}
+  async function feedback(text,points,total,answered){
+    await page.getByText(text,{exact:true}).waitFor();
+    assert.equal(await page.locator('.answer-feedback span').innerText(),`${points} 点 · この問題への回答は確定しました`);
+    assert.equal(await page.locator('.score strong').innerText(),String(total));assert.equal(await page.locator('.score>span').innerText(),`${answered} / 6 回答`);
+  }
+  await submitDead();await feedback('不正解','0',0,1);
+  await page.getByRole('button',{name:'一覧から選ぶ'}).click();
+  await page.locator('[data-problem="2"]').click();await questionNumber(3);
+  await key('22');await page.locator('#submit').click();await feedback('不正解','-1',-1,2);
+  await page.locator('[data-problem="4"]').click();await questionNumber(5);
+  await submitDead();await feedback('正解！','+1',0,3);
+  assert.equal(await page.locator('.problem-buttons .answered').count(),3);
+  await page.reload();await feedback('正解！','+1',0,3);
+});
+
+test('a delayed answer response does not replace a page opened while saving',async()=>{
+  await start('はじめの一手。4枚から見つけよう');await key('1117');const playUrl=page.url();
+  const ready=Promise.withResolvers(),release=Promise.withResolvers();
+  await page.route('**/api/sessions/*/attempts',async route=>{const response=await route.fetch();ready.resolve();await release.promise;await route.fulfill({response});},{times:1});
+  try{
+    await page.locator('#submit').click();await ready.promise;
+    await page.locator('.brand').click();await page.getByRole('heading',{name:'次は、どの手札に挑む？'}).waitFor();
+    release.resolve();await page.waitForFunction(()=>!document.body.classList.contains('busy'));
+    assert.equal(await page.getByRole('heading',{name:'次は、どの手札に挑む？'}).count(),1);
+    await page.goto(playUrl);await page.getByText('正解！',{exact:true}).waitFor();assert.equal(await page.locator('.score strong').innerText(),'1');
+  }finally{release.resolve();}
+  assert.deepEqual(errors,[]);
 });
 test('author import preview/publish/metadata and 5000-question paginated browser paths',async()=>{
   await page.evaluate(()=>localStorage.setItem('yp:account',JSON.stringify('a'.repeat(64))));

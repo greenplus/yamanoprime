@@ -44,7 +44,7 @@ function detail(){const s=data;
   $('#like').onclick=()=>run(async()=>{await api(`sets/${s.id}/like`,{body:{liked:!s.liked}});await navigate();});
 }
 async function run(fn){if(busy)return;busy=true;document.body.classList.add('busy');try{await fn();}catch(error){toast(error.message);}finally{busy=false;document.body.classList.remove('busy');}}
-function savePlay(){write('session:'+play.id,play.local);}
+function savePlay(state=play){write('session:'+state.id,state.local);}
 async function loadPlay(id,index,mode,unanswered=false){
   const local=read('session:'+id,{index:0,mode:'sequential',drafts:{},skips:[]});local.drafts??={};local.skips??=[];
   if(index!==undefined)local.index=index;if(mode)local.mode=mode;
@@ -113,9 +113,15 @@ async function submitMove(){
 }
 async function submitAnswer(kind){const {p,draft}=current();draft.pending={request_id:crypto.randomUUID(),problem_id:p.id,kind,...(kind==='move'?{solution:solutionNotation(p.hand,draft)}:{})};savePlay();renderPlay();await sendPending();}
 async function sendPending(){
-  const {p,draft}=current();const result=await api(`sessions/${play.id}/attempts`,{body:draft.pending,secret:play.local.token});
-  delete draft.pending;play.local.skips=play.local.skips.filter(id=>id!==p.id);savePlay();
-  if(result.session.status==='ENDED')location.hash='/result/'+play.id;else await loadPlay(play.id);
+  const state=play,{p,draft}=current(),pending=draft.pending;
+  const result=await api(`sessions/${state.id}/attempts`,{body:pending,secret:state.local.token});
+  // The POST response contains the committed judgment and session totals.
+  p.attempt={score:result.score,correct:result.correct,dead_choice:pending.kind==='dead'};
+  state.response.session=result.session;
+  delete draft.pending;
+  syncQuestionQueue(state.local,state.response.items,result.session.total_problem_count);savePlay(state);
+  if(play!==state)return;
+  if(result.session.status==='ENDED')location.hash='/result/'+state.id;else renderPlay();
 }
 async function resultPage(id,offset=0){
   const local=read('session:'+id,{}),r=await api(`sessions/${id}/results?offset=${offset}`,{secret:local.token});
