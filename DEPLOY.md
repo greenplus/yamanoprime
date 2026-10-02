@@ -5,6 +5,7 @@
 ## 設定する順序
 
 1. Railwayの [factoring-esportsプロジェクト](https://railway.com/project/8e962f51-3773-43c1-8b65-4ef811f017e0) の `production` を開きます。既存サービスは `fortunate-gratitude`（認証API）、`primeqk_4cards`、`Postgres` です。
+   - `Add` → `GitHub Repository` で `yamanoprime` が見つからない場合、`Configure GitHub App` でRailwayのアクセス対象に `greenplus/yamanoprime` を追加して保存します。Railwayへ戻り `Refresh` します。2026-10-02の確認時点では、検索結果にこのリポジトリが表示されていませんでした。
 2. GitHubリポジトリ `greenplus/yamanoprime` の `main` を使う新しいサービスを追加します。Root Directoryはリポジトリのルートです。ビルド・起動コマンドの上書きは不要です。
 3. 下表の環境変数を設定してデプロイします。DB接続情報はRailway内で設定します。
 4. Railwayのサービス設定で公開用ドメインを生成し、`https://…/api/health` を確認します。このHTTPS originが `VITE_API_URL` です。
