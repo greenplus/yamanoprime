@@ -1,0 +1,15 @@
+{
+  "name": "yamanoprime", "version": "0.1.0", "private": true, "type": "module",
+  "engines": {"node": ">=22.13.0"},
+  "scripts": {
+    "dev": "vite --host 127.0.0.1", "build": "vite build", "start": "node server/index.mjs",
+    "dev:api": "node --env-file-if-exists=.env server/index.mjs",
+    "test": "node --test --test-concurrency=1 tests/domain.test.mjs tests/api.test.mjs",
+    "test:browser": "node --test --test-concurrency=1 tests/browser.test.mjs",
+    "benchmark": "node scripts/benchmark.mjs",
+    "preview:local": "node scripts/preview-local.mjs",
+    "sync:rules": "python scripts/sync_rules.py"
+  },
+  "dependencies": {"pg": "^8.23.0"},
+  "devDependencies": {"vite": "^8.0.13", "@electric-sql/pglite": "^0.5.8"}
+}

@@ -1,0 +1,16 @@
+import {existsSync} from 'node:fs';
+import {createServer} from 'vite';
+import {openDatabase} from '../server/database.mjs';
+import {RuleWorker} from '../server/rule-worker.mjs';
+import {createApp} from '../server/app.mjs';
+import {seedDemo} from '../server/seed.mjs';
+if(process.env.NODE_ENV==='production')throw new Error('Local preview is development only');
+if(existsSync('.env'))process.loadEnvFile('.env');
+if(!process.env.DATABASE_URL&&!process.env.LOCAL_DATABASE)process.env.LOCAL_DATABASE='.runtime/database';
+const db=await openDatabase(),rules=new RuleWorker();
+if(process.env.LOCAL_DATABASE)await seedDemo(db,rules);
+const api=createApp({db,rules,origins:['http://127.0.0.1:5176','http://localhost:5176'],authAvailable:!process.env.LOCAL_DATABASE});
+await new Promise(resolve=>api.listen(3003,'127.0.0.1',resolve));
+const vite=await createServer({server:{host:'127.0.0.1',port:5176,strictPort:true}});await vite.listen();
+console.log('YamanoPrime local preview: http://127.0.0.1:5176');
+for(const sig of ['SIGINT','SIGTERM'])process.on(sig,async()=>{await vite.close();await new Promise(resolve=>api.close(resolve));await rules.close();await db.close();process.exit(0);});

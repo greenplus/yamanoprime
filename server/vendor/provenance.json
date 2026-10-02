@@ -1,0 +1,34 @@
+{
+  "source": "primeqk_online",
+  "main_sha256": "62183007631ef093001270c08995f36da5d911ce2ffba79bae8eb115ace72340",
+  "rules_sha256": "8b5c985666b72f87f253f1a17738c59b113d6a75c00967d1277e100eb8042550",
+  "client_sha256": "c7c59fe9a33657a103c4b19de1f47a9476164b047448a27539b67adee30f0dac",
+  "function_hash_normalization": "UTF-8, LF, ast.get_source_segment",
+  "functions": {
+    "invalid_joker_assignments": "cd1db22e1a02427c8e049da4ec3971cf9540215ce421de1b30713e0c9858b782",
+    "joker_assignment_error_message": "5393174b45ac8788173908c816fc7b9837e7e517666cb964d4252440dbb52de5",
+    "is_prime": "58683c8d5fb1ca3d08cf1dc4ff899d8bd831aa6fc6e4219b9e871bbfa1bceaef",
+    "is_twin_quadruplet_prime": "aa84d75be2c555684d9bade1db0a74249a6879ec2a28a2650bec807c345b3e78",
+    "find_prime_factor": "f422e51fa1abbb84ed6c35cf0282560ad14223b5b832f32cd28772a30e68871d",
+    "is_semiprime": "b3b3b62938a9428d03a307d7646864fdfbf61216b5110282afb3796a77ca33d9",
+    "is_valid_prime_by_rule": "ebe239b711f16e829488709e48e06d61b3119b9302030209740176ea4163afb3",
+    "rule_display_name": "d5057074c2c77090584512ab6a62b294010b1a587c3f23183225ea73906e8d2a",
+    "CompositeError": "caefecbfaf5dccdb20111c5261135c5966d5e31743756d0068e5ecdbf3e80621",
+    "CompositeSyntaxError": "9816b970a32793087830abe8ec44f85a0e91562a328389eb8e1394f39cad24c5",
+    "CompositeMathError": "cc0373b3d07a2ab4bd21cd04457d948bea6e28b72400d07a4777116b9028c2ac",
+    "map_joker_values_in_cards": "9bd605cfa9442927af12da95840330f234bcc46bc8ed132a373bcf93426f095c",
+    "build_int_from_cards": "1bdba5681cf613a9acec9ee661ca9508051a97c287c1742b08c1626bd8780cee",
+    "parse_and_eval_composite": "eab00b36b63671cefdb1c659a9d2a0513a418a96d4ef00ee6963bc91cccce79c",
+    "_SMALL_PRIMES": "66800aa496ae22ae01c6c4e0d71f61b433e9bd7abec38e1881d74064cf4e7043",
+    "MAX_EXP": "365230fbdef8137ab2665ee46d09d66582ea6717b242ceb242e5ad28f156be53",
+    "JOKER_ASSIGNABLE_VALUES": "20811b5c2d5c4d50b2858eb89f76d5845b9a933dfaa021d2d8c83a7d4f975d1f"
+  },
+  "ui_functions": [
+    "cardButton",
+    "suitLabel",
+    "rankLabel",
+    "isJoker",
+    "isRedSuit",
+    "compositeSyntaxError"
+  ]
+}

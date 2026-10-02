@@ -1,0 +1,53 @@
+name: Test and publish Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: node scripts/check-deploy-env.mjs
+        if: vars.VITE_API_URL != '' && vars.VITE_AUTH_API_URL != ''
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_AUTH_API_URL: ${{ vars.VITE_AUTH_API_URL }}
+      - run: pnpm build
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_AUTH_API_URL: ${{ vars.VITE_AUTH_API_URL }}
+      - uses: actions/configure-pages@v5
+        if: vars.VITE_API_URL != '' && vars.VITE_AUTH_API_URL != ''
+      - uses: actions/upload-pages-artifact@v3
+        if: vars.VITE_API_URL != '' && vars.VITE_AUTH_API_URL != ''
+        with:
+          path: dist
+  deploy:
+    if: vars.VITE_API_URL != '' && vars.VITE_AUTH_API_URL != ''
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

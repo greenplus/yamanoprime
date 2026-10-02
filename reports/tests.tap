@@ -1,0 +1,143 @@
+TAP version 13
+# Subtest: shared account tokens, draft privacy, visibility and ownership
+ok 1 - shared account tokens, draft privacy, visibility and ownership
+  ---
+  duration_ms: 2613.2109
+  type: 'test'
+  ...
+# Subtest: prime vertical slice, response privacy, alternate answer and one-attempt rule
+ok 2 - prime vertical slice, response privacy, alternate answer and one-attempt rule
+  ---
+  duration_ms: 231.5156
+  type: 'test'
+  ...
+# Subtest: wrong ordinary move scores zero and cannot be corrected
+ok 3 - wrong ordinary move scores zero and cannot be corrected
+  ---
+  duration_ms: 102.2898
+  type: 'test'
+  ...
+# Subtest: claimed dead score table, disputes, statistics and immutable correction version
+ok 4 - claimed dead score table, disputes, statistics and immutable correction version
+  ---
+  duration_ms: 213.0281
+  type: 'test'
+  ...
+# Subtest: parallel retries are idempotent, different requests cannot double score
+ok 5 - parallel retries are idempotent, different requests cannot double score
+  ---
+  duration_ms: 224.4866
+  type: 'test'
+  ...
+# Subtest: play count excludes start, paging, skip and intermediate 57 UI state
+ok 6 - play count excludes start, paging, skip and intermediate 57 UI state
+  ---
+  duration_ms: 116.8844
+  type: 'test'
+  ...
+# Subtest: version pinning, metadata edits and optimistic author editing
+ok 7 - version pinning, metadata edits and optimistic author editing
+  ---
+  duration_ms: 170.8792
+  type: 'test'
+  ...
+# Subtest: likes require authenticated attempt, are unique across versions, support removal; history persists
+ok 8 - likes require authenticated attempt, are unique across versions, support removal; history persists
+  ---
+  duration_ms: 169.013
+  type: 'test'
+  ...
+# Subtest: shuffle is restored, numeric rank lexicographic order, list paging does not leak
+ok 9 - shuffle is restored, numeric rank lexicographic order, list paging does not leak
+  ---
+  duration_ms: 142.608
+  type: 'test'
+  ...
+# Subtest: search, tags, rule and count filters; UNLISTED not on author browse
+ok 10 - search, tags, rule and count filters; UNLISTED not on author browse
+  ---
+  duration_ms: 160.6614
+  type: 'test'
+  ...
+# Subtest: import errors, max count, malformed JSON, rate and origin defenses
+ok 11 - import errors, max count, malformed JSON, rate and origin defenses
+  ---
+  duration_ms: 205.0393
+  type: 'test'
+  ...
+# request-failed Error
+# Subtest: session summary, attempt and stats roll back together on DB failure
+ok 12 - session summary, attempt and stats roll back together on DB failure
+  ---
+  duration_ms: 124.8998
+  type: 'test'
+  ...
+# Subtest: multiple disputes from an older version can each correct the current version
+ok 13 - multiple disputes from an older version can each correct the current version
+  ---
+  duration_ms: 172.7814
+  type: 'test'
+  ...
+# Subtest: session creation rate limit blocks a burst even without any final attempts
+ok 14 - session creation rate limit blocks a burst even without any final attempts
+  ---
+  duration_ms: 268.8578
+  type: 'test'
+  ...
+# Subtest: author answer and different legal arrangement both pass
+ok 15 - author answer and different legal arrangement both pass
+  ---
+  duration_ms: 102.4715
+  type: 'test'
+  ...
+# Subtest: 1729 is special in prime and BOTH, not composite-only
+ok 16 - 1729 is special in prime and BOTH, not composite-only
+  ---
+  duration_ms: 1.6109
+  type: 'test'
+  ...
+# Subtest: 57 one/multiple/only/suffix, with full physical consumption
+ok 17 - 57 one/multiple/only/suffix, with full physical consumption
+  ---
+  duration_ms: 3.748
+  type: 'test'
+  ...
+# Subtest: upstream composite legality includes separate materials and exponent grammar
+ok 18 - upstream composite legality includes separate materials and exponent grammar
+  ---
+  duration_ms: 3.4963
+  type: 'test'
+  ...
+# Subtest: physical-card bounds, X/0 excluded, multiple final moves rejected
+ok 19 - physical-card bounds, X/0 excluded, multiple final moves rejected
+  ---
+  duration_ms: 2.0006
+  type: 'test'
+  ...
+# Subtest: duplicate hands warn; contradictory problem kinds block publication; line numbers survive blanks
+ok 20 - duplicate hands warn; contradictory problem kinds block publication; line numbers survive blanks
+  ---
+  duration_ms: 2.7006
+  type: 'test'
+  ...
+# Subtest: provided 素数探索 examples convert rank tokens, retain plain primes and optional 57
+ok 21 - provided 素数探索 examples convert rank tokens, retain plain primes and optional 57
+  ---
+  duration_ms: 3.6602
+  type: 'test'
+  ...
+# Subtest: 57 reset and UI card allocation preserve all physical cards without submitting
+ok 22 - 57 reset and UI card allocation preserve all physical cards without submitting
+  ---
+  duration_ms: 0.6495
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6313.55

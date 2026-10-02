@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-02T07:28:11.925Z",
+  "metrics": [
+    {
+      "count": 937,
+      "list_50_dom_nodes": 312,
+      "result_50_dom_nodes": 871,
+      "browse_start_list_ms": 477
+    },
+    {
+      "count": 5000,
+      "list_50_dom_nodes": 324,
+      "result_50_dom_nodes": 1065,
+      "browse_start_list_ms": 400
+    }
+  ],
+  "errors": []
+}

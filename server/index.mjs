@@ -1,0 +1,11 @@
+import {openDatabase} from './database.mjs';
+import {RuleWorker} from './rule-worker.mjs';
+import {createApp} from './app.mjs';
+import {seedDemo} from './seed.mjs';
+if(process.env.NODE_ENV==='production'&&!process.env.ALLOWED_ORIGINS)throw new Error('ALLOWED_ORIGINS is required');
+const db=await openDatabase(),rules=new RuleWorker();
+if(!(await rules.call({op:'validate',hand:[1,1,3],solution:'113',answer_mode:'PRIME_ONLY',allow_57:false})).legal)throw new Error('Rule worker startup check failed');
+if(process.env.LOCAL_DATABASE)await seedDemo(db,rules);
+const server=createApp({db,rules,origins:(process.env.ALLOWED_ORIGINS||'http://127.0.0.1:5176,http://localhost:5176').split(',').map(x=>x.trim()),authAvailable:!process.env.LOCAL_DATABASE,trustProxy:process.env.TRUST_PROXY==='1'});
+server.listen(Number(process.env.PORT||3003),'0.0.0.0',()=>console.log('YamanoPrime API ready'));
+for(const sig of ['SIGINT','SIGTERM'])process.on(sig,()=>server.close(()=>void Promise.all([db.close(),rules.close()]).then(()=>process.exit(0))));
