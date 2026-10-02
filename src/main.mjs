@@ -1,6 +1,7 @@
 import './style.css';
 import {cardButton,compositeSyntaxError} from './vendor/game-ui.mjs';
 import {label,emptyDraft,usedIds,selectCard,appendOperator,currentNotation,solutionNotation,playCut} from './play-state.mjs';
+import {syncQuestionQueue,nextQueuedQuestion} from './question-queue.mjs';
 const $=selector=>document.querySelector(selector),root=$('#app');
 const base=(import.meta.env.VITE_API_URL||'').replace(/\/$/,''),authBase=(import.meta.env.VITE_AUTH_API_URL||'').replace(/\/$/,'');
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -44,12 +45,19 @@ function detail(){const s=data;
 }
 async function run(fn){if(busy)return;busy=true;document.body.classList.add('busy');try{await fn();}catch(error){toast(error.message);}finally{busy=false;document.body.classList.remove('busy');}}
 function savePlay(){write('session:'+play.id,play.local);}
-async function loadPlay(id,index,mode){
+async function loadPlay(id,index,mode,unanswered=false){
   const local=read('session:'+id,{index:0,mode:'sequential',drafts:{},skips:[]});local.drafts??={};local.skips??=[];
   if(index!==undefined)local.index=index;if(mode)local.mode=mode;
-  const offset=Math.floor(local.index/50)*50;
-  const response=await api(`sessions/${id}?offset=${offset}`,{secret:local.token});
-  if(response.session.status==='ENDED'){location.hash='/result/'+id;return;}
+  let response;
+  while(true){
+    const offset=Math.floor(local.index/50)*50;
+    if(!response||response.offset!==offset)response=await api(`sessions/${id}?offset=${offset}`,{secret:local.token});
+    if(response.session.status==='ENDED'){location.hash='/result/'+id;return;}
+    syncQuestionQueue(local,response.items,response.session.total_problem_count);
+    const problem=response.items.find(p=>p.order===local.index);
+    if(unanswered&&problem?.attempt&&local.questionQueue.length){local.index=local.questionQueue[0];continue;}
+    break;
+  }
   play={id,local,response};savePlay();renderPlay();
 }
 function renderPlay(){
@@ -71,7 +79,7 @@ function renderPlay(){
   <div class="dedicated-keyboard" aria-label="カード入力キー">${Array.from({length:13},(_,i)=>i+1).map(n=>`<button data-key="${n}" ${locked||!p.hand.some((rank,i)=>rank===n&&!picked.has(i))?'disabled':''}>${n===1?'1':label(n)}</button>`).join('')}<button id="undo" aria-label="1枚戻す" ${locked?'disabled':''}>⌫</button></div>
   <p class="keyboard-hint">PC：1〜9 / T J Q K で選択 · Backspace で戻す · Enter で出す · = で合成数出し · * / ^ で演算子</p>
   <div class="board-bottom"><button class="text-button" id="dead" ${locked?'disabled':''}>詰みと回答する</button><span>最終回答は1回。解答は終了後に公開。</span></div></section></div>
-  <div class="question-nav"><button class="button" id="previous" ${p.order===0?'disabled':''}>← 前の問題</button><span>${l.skips.length} 問をスキップ中</span><button class="button" id="next" ${p.order===r.session.total_problem_count-1?'disabled':''}>${done?'次の問題 →':'スキップして次へ →'}</button></div>`);
+  <div class="question-nav"><button class="button" id="previous" ${p.order===0?'disabled':''}>← 前の問題</button><span>${l.skips.length} 問をスキップ中</span><button class="button" id="next" ${(l.mode==='sequential'?done&&!l.questionQueue.length:p.order===r.session.total_problem_count-1)?'disabled':''}>${done?'次の問題 →':'スキップして次へ →'}</button></div>`);
   function card(index,onClick,disabled=false){const rank=p.hand[index],card=cardButton({card_id:index,rank,suit:['S','H','C','D'][index%4],is_joker:false});card.disabled=disabled;card.setAttribute('aria-label',`${label(rank)}の札 ${index+1}枚目`);card.onclick=onClick;return card;}
   p.hand.forEach((_,i)=>{if(!picked.has(i))$('#hand').append(card(i,()=>{selectCard(draft,i);updateDraft();},locked));});
   draft.selected.forEach((i,j)=>$('#selected').append(card(i,()=>{draft.selected.splice(j,1);updateDraft();},locked)));
@@ -86,7 +94,7 @@ function renderPlay(){
   $('#dead').onclick=()=>confirmDialog('「詰み」で最終回答しますか？','この問題の回答は確定し、後から変更できません。',()=>run(()=>submitAnswer('dead')));
   $('#finish').onclick=()=>confirmDialog('このプレイを終了しますか？',`未回答 ${r.session.unanswered_count} 問のまま結果を確定します。このセッションは再開できません。`,()=>run(async()=>{await api(`sessions/${play.id}/end`,{body:{},secret:l.token});location.hash='/result/'+play.id;}));
   $('#previous').onclick=()=>run(()=>loadPlay(play.id,p.order-1));
-  $('#next').onclick=()=>run(async()=>{if(!done&&!l.skips.includes(p.id))l.skips.push(p.id);savePlay();await loadPlay(play.id,p.order+1);});
+  $('#next').onclick=()=>run(async()=>{const queued=nextQueuedQuestion(l,p),next=l.mode==='sequential'?queued:p.order+1;savePlay();if(next!==undefined)await loadPlay(play.id,next,undefined,l.mode==='sequential');});
   document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{l.mode=b.dataset.mode;updateDraft();});
   document.querySelectorAll('[data-problem]').forEach(b=>b.onclick=()=>run(()=>loadPlay(play.id,Number(b.dataset.problem))));
   bindPager(offset=>run(()=>loadPlay(play.id,offset)));

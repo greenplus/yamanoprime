@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1", "build": "vite build", "start": "node server/index.mjs",
     "dev:api": "node --env-file-if-exists=.env server/index.mjs",
-    "test": "node --test --test-concurrency=1 tests/domain.test.mjs tests/api.test.mjs",
+    "test": "node --test --test-concurrency=1 tests/domain.test.mjs tests/api.test.mjs tests/question-queue.test.mjs",
     "test:browser": "node --test --test-concurrency=1 tests/browser.test.mjs",
     "benchmark": "node scripts/benchmark.mjs",
     "preview:local": "node scripts/preview-local.mjs",

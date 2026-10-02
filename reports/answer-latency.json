@@ -1,0 +1,307 @@
+{
+  "at": "2026-10-02T13:34:10.337Z",
+  "node": "v24.19.0",
+  "platform": "win32",
+  "scope": "937 four-card prime hands; local anonymous API with PGlite; production read probes only",
+  "collector_local_validation": {
+    "count": 1874,
+    "median_ms": 0.0014000000001033186,
+    "p95_ms": 0.0036000000000058208,
+    "mean_ms": 0.0019702241195308787
+  },
+  "worker_startup_and_first_validation_ms": 91.52170000000024,
+  "yamanoprime_warm_worker": {
+    "count": 937,
+    "median_ms": 0.13319999999976062,
+    "p95_ms": 0.3242000000000189,
+    "mean_ms": 0.16545421558164408
+  },
+  "local_anonymous_flow": {
+    "post": {
+      "count": 20,
+      "median_ms": 19.040599999999813,
+      "p95_ms": 39.51660000000038,
+      "mean_ms": 17.81668000000002
+    },
+    "followup_get": {
+      "count": 20,
+      "median_ms": 13.898499999999785,
+      "p95_ms": 23.222200000000157,
+      "mean_ms": 14.083054999999968
+    },
+    "until_feedback": {
+      "count": 20,
+      "median_ms": 33.0952999999995,
+      "p95_ms": 54.11630000000014,
+      "mean_ms": 31.899734999999986
+    },
+    "samples": [
+      {
+        "post_ms": 39.51660000000038,
+        "restore_ms": 8.971799999999803,
+        "post_sql_statements": 9,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.7005999999996675
+      },
+      {
+        "post_ms": 11.389299999999821,
+        "restore_ms": 23.222200000000157,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.41269999999985885
+      },
+      {
+        "post_ms": 11.18560000000025,
+        "restore_ms": 11.044100000000071,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.5171000000000276
+      },
+      {
+        "post_ms": 36.80009999999993,
+        "restore_ms": 17.316200000000208,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 1.0050000000001091
+      },
+      {
+        "post_ms": 11.88169999999991,
+        "restore_ms": 17.22539999999981,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.4430999999999585
+      },
+      {
+        "post_ms": 9.776299999999992,
+        "restore_ms": 6.476599999999962,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.3753999999998996
+      },
+      {
+        "post_ms": 8.583999999999833,
+        "restore_ms": 15.62480000000005,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.3888000000001739
+      },
+      {
+        "post_ms": 19.767699999999877,
+        "restore_ms": 13.898499999999785,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.3951999999999316
+      },
+      {
+        "post_ms": 20.922399999999925,
+        "restore_ms": 14.292599999999766,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.39940000000024156
+      },
+      {
+        "post_ms": 21.217200000000048,
+        "restore_ms": 12.184900000000198,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.4679000000000997
+      },
+      {
+        "post_ms": 19.040599999999813,
+        "restore_ms": 14.054699999999684,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.4459999999999127
+      },
+      {
+        "post_ms": 12.59310000000005,
+        "restore_ms": 19.380099999999857,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.4442999999996573
+      },
+      {
+        "post_ms": 13.519800000000032,
+        "restore_ms": 5.441199999999753,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.45830000000023574
+      },
+      {
+        "post_ms": 19.315200000000004,
+        "restore_ms": 13.41170000000011,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.4442999999996573
+      },
+      {
+        "post_ms": 21.01090000000022,
+        "restore_ms": 10.972899999999754,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.42980000000034124
+      },
+      {
+        "post_ms": 21.70360000000028,
+        "restore_ms": 12.127199999999903,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.5563000000001921
+      },
+      {
+        "post_ms": 11.85550000000012,
+        "restore_ms": 12.557400000000143,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.47919999999976426
+      },
+      {
+        "post_ms": 20.91260000000011,
+        "restore_ms": 12.521699999999782,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.4214999999999236
+      },
+      {
+        "post_ms": 10.370100000000093,
+        "restore_ms": 21.153000000000247,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.4434000000001106
+      },
+      {
+        "post_ms": 14.971299999999701,
+        "restore_ms": 19.784100000000308,
+        "post_sql_statements": 8,
+        "restore_sql_statements": 4,
+        "worker_ms": 0.4547000000002299
+      }
+    ]
+  },
+  "production_read_probes": [
+    {
+      "name": "yamano_health",
+      "method": "GET",
+      "url": "https://yamanoprime-production.up.railway.app/api/health",
+      "count": 5,
+      "median_ms": 198.52700000000004,
+      "p95_ms": 367.3962999999999,
+      "mean_ms": 222.14690000000002,
+      "samples": [
+        {
+          "ms": 367.3962999999999,
+          "status": 200
+        },
+        {
+          "ms": 198.95870000000014,
+          "status": 200
+        },
+        {
+          "ms": 198.52700000000004,
+          "status": 200
+        },
+        {
+          "ms": 185.7539999999999,
+          "status": 200
+        },
+        {
+          "ms": 160.09850000000006,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "name": "yamano_sets",
+      "method": "GET",
+      "url": "https://yamanoprime-production.up.railway.app/api/sets",
+      "count": 5,
+      "median_ms": 167.4987000000001,
+      "p95_ms": 248.64059999999972,
+      "mean_ms": 171.55473999999995,
+      "samples": [
+        {
+          "ms": 127.77160000000003,
+          "status": 200
+        },
+        {
+          "ms": 248.64059999999972,
+          "status": 200
+        },
+        {
+          "ms": 137.94999999999982,
+          "status": 200
+        },
+        {
+          "ms": 167.4987000000001,
+          "status": 200
+        },
+        {
+          "ms": 175.91280000000006,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "name": "collector_health",
+      "method": "GET",
+      "url": "https://primeqk4cards-production.up.railway.app/api/health",
+      "count": 5,
+      "median_ms": 202.51649999999972,
+      "p95_ms": 440.71059999999943,
+      "mean_ms": 230.30155999999988,
+      "samples": [
+        {
+          "ms": 440.71059999999943,
+          "status": 200
+        },
+        {
+          "ms": 202.51649999999972,
+          "status": 200
+        },
+        {
+          "ms": 118.17820000000029,
+          "status": 200
+        },
+        {
+          "ms": 135.46909999999934,
+          "status": 200
+        },
+        {
+          "ms": 254.63340000000062,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "name": "yamano_preflight",
+      "method": "OPTIONS",
+      "url": "https://yamanoprime-production.up.railway.app/api/sessions/probe/attempts",
+      "count": 5,
+      "median_ms": 131.6226999999999,
+      "p95_ms": 135.02450000000044,
+      "mean_ms": 122.45308000000004,
+      "samples": [
+        {
+          "ms": 135.02450000000044,
+          "status": 204
+        },
+        {
+          "ms": 106.5077999999994,
+          "status": 204
+        },
+        {
+          "ms": 105.74290000000019,
+          "status": 204
+        },
+        {
+          "ms": 131.6226999999999,
+          "status": 204
+        },
+        {
+          "ms": 133.3675000000003,
+          "status": 204
+        }
+      ]
+    }
+  ]
+}

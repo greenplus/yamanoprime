@@ -95,3 +95,35 @@ test('favorites checkbox filters liked quizzes, survives reload and reflects unl
   const guest=await browser.newPage();try{await guest.goto('http://127.0.0.1:5177/#/?liked=true');await guest.getByRole('heading',{name:'お気に入りのクイズ',exact:true}).waitFor();await guest.getByRole('button',{name:'ログインする',exact:true}).waitFor();}finally{await guest.close();}
   assert.deepEqual(errors,[]);
 });
+
+async function questionNumber(number){await page.waitForFunction(n=>document.querySelector('.board-top strong')?.textContent===String(n),number);}
+async function nextQuestion(number){await page.locator('#next').click();await questionNumber(number);}
+async function solveQuestion(solution){await key(solution);await page.locator('#submit').click();await page.getByText('正解！',{exact:true}).waitFor();}
+
+test('sequential mode revisits skipped questions in order and moves re-skips to the tail',async()=>{
+  await start('はじめの一手。4枚から見つけよう');
+  await nextQuestion(2);await solveQuestion('1129');await nextQuestion(3);
+  await nextQuestion(4);await solveQuestion('1481');await nextQuestion(5);
+  assert.equal(await page.locator('#next').isEnabled(),true);
+  await nextQuestion(1);await page.getByText('3 問をスキップ中',{exact:true}).waitFor();
+  await nextQuestion(3);await page.reload();await questionNumber(3);
+  await solveQuestion('1451');await nextQuestion(5);
+  await solveQuestion('1447');await nextQuestion(1);
+  await key('1117');await page.locator('#submit').click();
+  await page.getByRole('heading',{name:'おつかれさまでした。'}).waitFor();
+  assert.equal(await page.locator('.final-score strong').innerText(),'5');
+  assert.equal(await page.locator('.result-row').count(),5);
+  assert.deepEqual(errors,[]);
+});
+
+test('legacy saved sessions cross page boundaries and wrap from the 5000th question',async()=>{
+  await start('5000問の上がり手ノート');
+  async function restoreLegacy(index){
+    await page.evaluate(index=>{const id=JSON.parse(localStorage.getItem('yp:last-session')),key='yp:session:'+id,local=JSON.parse(localStorage.getItem(key));local.index=index;delete local.questionQueue;localStorage.setItem(key,JSON.stringify(local));},index);
+    await page.reload();await questionNumber(index+1);
+  }
+  await restoreLegacy(49);await nextQuestion(51);
+  await restoreLegacy(4999);await nextQuestion(1);await nextQuestion(2);
+  await page.reload();await questionNumber(2);
+  assert.deepEqual(errors,[]);
+});

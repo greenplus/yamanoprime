@@ -1,17 +1,17 @@
 {
-  "at": "2026-10-02T07:28:11.925Z",
+  "at": "2026-10-02T13:37:36.697Z",
   "metrics": [
     {
       "count": 937,
       "list_50_dom_nodes": 312,
       "result_50_dom_nodes": 871,
-      "browse_start_list_ms": 477
+      "browse_start_list_ms": 518
     },
     {
       "count": 5000,
       "list_50_dom_nodes": 324,
       "result_50_dom_nodes": 1065,
-      "browse_start_list_ms": 400
+      "browse_start_list_ms": 416
     }
   ],
   "errors": []
